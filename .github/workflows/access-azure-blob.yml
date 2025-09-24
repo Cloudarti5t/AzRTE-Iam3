@@ -1,32 +1,32 @@
 name: Get Flag
 on: [workflow_dispatch]
- 
+
 permissions:
   id-token: write
   contents: read
- 
+
 jobs:
   get-flag:
     runs-on: ubuntu-latest
-    environment: Azure    
     steps:
       - name: Azure login
-        uses: azure/login@v2
+        uses: azure/login@v1
         with:
-          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          client-id: 4470881f-631a-4d27-a0a4-1127671e7776
           tenant-id: azure.training.hacktricks.xyz
-          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          subscription-id: e48fa11c-15f3-48a0-a953-8d617222a070
           enable-AzPSSession: true
- 
+
       - name: Download flag
         run: |
           az storage account list
           az storage blob download \
-            --account-name "${{ vars.AZURE_STORAGE_ACCOUNT }}" \
-            --container-name "${{ vars.AZURE_CONTAINER_NAME }}" \
-            --name "${{ vars.AZURE_BLOB_NAME }}" \
+            --account-name iamazurelab3a3b1f4b3 \
+            --container-name flag \
+            --name flag.txt \
             --file flag.txt \
             --auth-mode login
       - name: Read flag
         run: |
           cat flag.txt
+ 
