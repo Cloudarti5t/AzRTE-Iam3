@@ -1,37 +1,32 @@
-name: Access Azure Storage Blob via OIDC
-
-on:
-  push:
-    branches:
-      - main
-
+name: Get Flag
+on: [workflow_dispatch]
+ 
 permissions:
-  id-token: write  # Required for OIDC token request
-  contents: read   # Required for actions/checkout
-
+  id-token: write
+  contents: read
+ 
 jobs:
-  access-blob:
+  get-flag:
     runs-on: ubuntu-latest
-    environment: Azure
+    environment: Azure    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Azure Login with OIDC
-        uses: azure/login@v1
+      - name: Azure login
+        uses: azure/login@v2
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
-          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          tenant-id: azure.training.hacktricks.xyz
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Download and Display Flag from Blob
-        uses: azure/cli@v2
-        with:
-          inlineScript: |
-            az storage blob download \
-              --account-name "${{ vars.AZURE_STORAGE_ACCOUNT }}" \
-              --container-name "${{ vars.AZURE_CONTAINER_NAME }}" \
-              --name "${{ vars.AZURE_BLOB_NAME }}" \
-              --file /tmp/flag.txt \
-              --auth-mode login
-            cat /tmp/flag.txt
+          enable-AzPSSession: true
+ 
+      - name: Download flag
+        run: |
+          az storage account list
+          az storage blob download \
+            --account-name "${{ vars.AZURE_STORAGE_ACCOUNT }}" \
+            --container-name "${{ vars.AZURE_CONTAINER_NAME }}" \
+            --name "${{ vars.AZURE_BLOB_NAME }}" \
+            --file flag.txt \
+            --auth-mode login
+      - name: Read flag
+        run: |
+          cat flag.txt
